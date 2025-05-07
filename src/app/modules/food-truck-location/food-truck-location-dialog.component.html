@@ -1,0 +1,156 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button slot="icon-only" (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content #foodTruckWindow>
+  <ng-container
+    *ngIf="(locationSavedSuccessfully$ | async) === false; else savedLocation"
+  >
+    <h4 class="rpx-text-gradient">FOOD TRUCK LOCATION</h4>
+  </ng-container>
+
+  <ng-template #savedLocation>
+    <h4 class="rpx-text-gradient">
+      {{ locationSavedSuccessfullyMessage$ | async }}
+      <fa-icon
+        class="faCheck"
+        [icon]="faCheckCircle"
+        *ngIf="locationSavedSuccessfully$ | async"
+      ></fa-icon>
+    </h4>
+  </ng-template>
+
+  <ng-container *ngIf="(displayLocationEnablingInstructions$ | async) === true">
+    <h2
+      class="text-uppercase mt-4"
+    >
+      BONKERS!
+    </h2>
+
+    <br />
+    <i class="fas fa-map-marker-alt"></i>
+
+    <ion-text class="rpx-text-gradient mt-2">LOCATION DISABLED</ion-text>
+
+    <ion-text class="sb-locationList text-center mt-3" (click)="openAppSettings()">
+      OPEN SETTINGS
+    </ion-text>
+
+    <ion-button class="rpx-button" (click)="initSettingsForm()">
+      TRY LOCATION
+    </ion-button>
+  </ng-container>
+
+  <form [formGroup]="businessSettingsForm">
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ng-container *ngIf="(businessFormSubmitted$ | async) && i.rpxOrigin.errors">
+            <ion-label *ngIf="i.rpxOrigin.errors.required">
+              You must choose a place of origin!
+            </ion-label>
+          </ng-container>
+
+          <div class="rpx-map mb-4">
+            <div
+              id="settings-map"
+              *ngIf="map$ | async"
+              [ngClass]="getMapClass()"
+            ></div>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="locationFound$ | async">
+        <ion-col>
+          <ion-input
+            class="sb-input rpx-search-map-input sb-origin-address-input"
+            (keydown)="searchMapsKeyDown($event)"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="off"
+            type="text"
+            formControlName="originAddress"
+            maxlength="72"
+            #addressSearch
+          />
+
+          <div class="rpx-button sb-search-icon" (click)="searchMaps()">
+            <i class="fa fa-search"></i>
+          </div>
+
+          <input
+            class="sb-input"
+            type="hidden"
+            formControlName="rpxOrigin"
+          />
+
+          <div>
+            <div
+              class="rpx-place"
+              *ngFor="let prediction of addressResults$ | async"
+              (click)="focusPlace(prediction)"
+            >
+              <span class="rpx-text-gradient">{{
+                prediction.description
+              }}</span>
+            </div>
+          </div>
+
+          <div class="mt-4 mb-4 rpx-text-gradient">OR</div>
+
+          <ion-button
+            class="mt-4 mb-4 cursor-pointer"
+            (click)="setAsCurrentLocation()"
+          >
+            <fa-icon
+              class="faSearchLocation"
+              [icon]="faSearchLocation"
+            ></fa-icon>
+              SET AS CURRENT LOCATION
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-text
+      class="rpx-input-info rpx-text-gradient text-uppercase text-center mt-2 mb-3"
+      *ngIf="locationFound$ | async"
+    >
+      {{ originTitle$ | async }}
+    </ion-text>
+
+    <ion-img
+      class="sb-business-img"
+      [ngClass]="getBusinessImgStyle()"
+      *ngIf="locationFound$ | async"
+      src="{{ originPhoto$ | async }}"
+    />
+
+    <ion-text
+      class="rpx-input-info rpx-text-gradient rpx-place-address text-uppercase text-center mt-4 mb-3"
+      *ngIf="(locationFound$ | async) && (place$ | async)"
+    >
+      {{ (place$ | async).formatted_address }}
+    </ion-text>
+  </form>
+
+  <ion-button class="btn rpx-button" (click)="saveLocation()">
+    SAVE LOCATION
+  </ion-button>
+
+  <ion-button
+    class="mt-4 mb-4 text-decoration-underline cursor-pointer"
+    style="text-align: center; color: white"
+    (click)="close()"
+  >
+    CLOSE
+  </ion-button>
+</ion-content>
+
+<app-loading-screen *ngIf="loading$ | async"></app-loading-screen>

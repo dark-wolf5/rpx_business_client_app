@@ -1,0 +1,80 @@
+<div>
+  <h4
+    id="sp-loyaltyMenuTitle"
+    class="rpx-text-gradient text-center text-uppercase mb-3"
+  >
+    REWARD MENU
+  </h4>
+
+  <p class="rpx-loyaltyMenuDescription rpx-input-info text-center mb-3">
+    Rewards that your business will offer to the Rpx Community.
+  </p>
+
+  <div class="sb-menuItemWrapper">
+    <div
+      class="sb-addMenuItem"
+      (click)="addItem()"
+      *ngIf="(rewards$ | async)?.length < 8"
+    >
+      <h6 class="rpx-text-gradient">+ ADD REWARD</h6>
+    </div>
+
+    <div
+      class="sb-menuItem"
+      *ngFor="let reward of rewards$ | async"
+      [ngStyle]="rewardTileStyling(reward)"
+      (click)="editReward(reward)"
+    >
+      <h6 *ngIf="reward.type === 0 || reward.type === 2">
+        <span class="rpx-text-gradient">
+          {{ reward.name }}
+        </span>
+      </h6>
+
+      <h6 *ngIf="reward.type === 1">
+        <span class="sb-text-light-green-gradient">
+          {{ reward.point_cost | currency: "USD" }}
+        </span>
+        <br />
+        <span class="rpx-text-gradient" style="font-size: 0.2rem">
+          DISCOUNT
+        </span>
+      </h6>
+    </div>
+
+    <div
+      style="cursor: pointer"
+      class="mt-4"
+      *ngIf="(userType$ | async) !== eAllowedAccountTypes.Personal"
+      (click)="manageLoyaltyTiers()"
+    >
+      <span class="rpx-text-gradient">MANAGE TIERS </span
+      ><i class="fa fa-coins"></i>
+    </div>
+
+    <ng-container *ngIf="(openTiers$ | async) === true">
+      <app-tier-creator
+        (closeTiers)="openTiers$.next(false)"
+      ></app-tier-creator>
+    </ng-container>
+  </div>
+
+  <div
+    class="rpx-text-gradient text-uppercase"
+    (click)="closeWindow()"
+    *ngIf="fullScreenMode"
+  >
+    CLOSE
+  </div>
+</div>
+
+<app-reward-creator
+  *ngIf="(itemCreator$ | async) === true"
+  (closeRewardCreatorAndRefetchRewardListEvt)="
+    closeRewardCreatorAndRefetchRewardList()
+  "
+  (closeParentWindowEvt)="closeWindow()"
+  (closeRewardCreatorEvt)="closeRewardCreator()"
+  #rewardCreator
+  [reward]="reward$ | async"
+></app-reward-creator>

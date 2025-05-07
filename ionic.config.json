@@ -1,0 +1,7 @@
+{
+  "name": "RpxBusiness",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

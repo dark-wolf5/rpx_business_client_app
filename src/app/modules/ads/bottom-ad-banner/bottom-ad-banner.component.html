@@ -1,0 +1,93 @@
+<div [ngClass]="getAdWrapperClass()" *ngIf="displayAd" [ngStyle]="getAdStyle()">
+  <div
+    class="rpx-white-iconImg"
+    [ngStyle]="{ background: 'url(assets/images/home_imgs/rpx-white-icon.png)' }"
+  ></div>
+
+  <ng-container *ngIf="desktopPreview">
+    <img
+      class="rpx-ad-image"
+      [src]="genericAdImage | safe"
+      *ngIf="ad.id === 2"
+    />
+
+    <img
+      class="rpx-ad-image"
+      [src]="ad.images | safe"
+      *ngIf="ad.id !== 2"
+    />
+  </ng-container>
+
+  <ng-container *ngIf="mobilePreview">
+    <img
+      class="rpx-ad-image"
+      [src]="genericAdImageMobile | safe"
+      *ngIf="ad.id === 2"
+    />
+
+    <img
+      class="rpx-ad-image"
+      [src]="ad.images_mobile | safe"
+      *ngIf="ad.id !== 2"
+    />
+  </ng-container>
+
+  <div class="sb-ad-bottom" *ngIf="desktopPreview">
+    <span class="rpx-text-gradient sb-sponsoredName text-uppercase">{{
+      business.name
+    }}</span>
+
+    <span class="rpx-text-gradient"> - </span>
+    <span class="sb-text-light-green-gradient sb-totalRewards text-uppercase">
+      {{ totalRewards }} REWARDS</span
+    >
+
+    <span class="rpx-text-gradient"> - </span>
+    <span class="sb-text-light-green-gradient sb-distanceMiles text-uppercase">
+      {{ distance | number: "1.1-2" : "en-US" }} miles</span
+    >
+
+    <span class="rpx-text-gradient"> - </span>
+    <span class="sb-text-light-green-gradient sb-perDollar text-uppercase">
+      {{
+        loyaltyPointBalance.loyalty_point_dollar_percent_value / 100
+          | currency: "USD"
+      }}
+      per dollar
+    </span>
+
+    <span class="rpx-text-gradient"> - </span>
+    <span class="rpx-text-gradient sb-address text-uppercase"
+      ><i class="fas fa-map-marker-alt"></i> {{ business.address }}</span
+    >
+  </div>
+
+  <div class="sb-ad-bottom" *ngIf="mobilePreview">
+    <span class="rpx-text-gradient sb-sponsoredName text-uppercase">{{
+      business.name
+    }}</span>
+    <span
+      class="sb-text-light-green-gradient sb-totalRewards text-uppercase"
+      style="font-size: 1rem"
+      >{{ totalRewards }} REWARDS</span
+    >
+    <span class="rpx-text-gradient sb-distanceMiles text-uppercase"
+      >{{ distance | number: "1.1-2" : "en-US" }} miles</span
+    >
+
+    <span
+      class="sb-text-light-green-gradient sb-perDollar text-uppercase"
+      style="font-size: 1rem"
+    >
+      {{
+        loyaltyPointBalance.loyalty_point_dollar_percent_value / 100
+          | currency: "USD"
+      }}
+      per dollar
+    </span>
+
+    <span class="rpx-text-gradient sb-address text-uppercase"
+      ><i class="fas fa-map-marker-alt"></i> {{ business.address }}</span
+    >
+  </div>
+</div>

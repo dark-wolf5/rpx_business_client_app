@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <i class="fas fa-map-marker-alt"></i>
+
+  <h2
+    class="rpx-text-gradient text-uppercase mt-4"
+    style="display: inline-block"
+  >
+    BONKERS!
+  </h2>
+
+  <ion-text class="rpx-text-gradient mt-2">LOCATION DISABLED</ion-text>
+
+  <ion-button class="text-center mt-3" (click)="openAppSettings()">
+    OPEN SETTINGS
+  </ion-button>
+
+  <ion-button (click)="mobileStartLocation()">
+    TRY LOCATION
+  </ion-button>
+</ion-content>

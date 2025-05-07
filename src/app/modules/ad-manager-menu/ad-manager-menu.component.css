@@ -1,0 +1,105 @@
+.rpx-overlay-window {
+  z-index: 97;
+}
+.rpx-loyaltyMenuDescription {
+  position: relative;
+  margin: 0 auto;
+  color: white;
+  font-size: 0.8rem;
+}
+.sb-menuAdWrapper {
+  position: relative;
+  margin: 0 auto;
+  min-width: 900px;
+  width: 900px;
+  max-width: 900px;
+  display: block;
+  text-align: center;
+}
+.sb-menuAd {
+  position: relative;
+  max-width: 115px;
+  width: 115px;
+  min-width: 115px;
+  height: 115px;
+  min-height: 115px;
+  max-height: 115px;
+  margin-right: 5px;
+  margin-left: 5px;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  border-radius: 0px;
+  display: inline-block;
+  align-content: center;
+  align-items: center;
+  cursor: pointer;
+  justify-content: center;
+  margin-top: 3px;
+}
+
+.sb-menuAd h6 {
+  position: absolute;
+  display: block;
+  width: 100%;
+  min-width: 100%;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-100%);
+  background-color: black;
+  color: white;
+  padding: 5px;
+  text-transform: uppercase;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 0.2rem;
+}
+
+.rpx-button {
+  background-color: #4caf50 !important;
+}
+@media (max-width: 1024px) {
+  .sb-menuAdWrapper {
+    width: 96%;
+    min-width: 96%;
+    max-width: 96%;
+  }
+}
+@media (max-width: 460px) {
+  h4 {
+    font-size: 1rem;
+  }
+  #sp-loyaltyMenuTitle {
+    margin-bottom: 20px !important;
+  }
+  p {
+    font-size: 0.8rem;
+  }
+  .rpx-loyaltyMenuDescription {
+    max-width: 94%;
+    width: 94%;
+  }
+  .sb-menuAdWrapper {
+    max-width: 96%;
+    width: 96%;
+    min-width: 96%;
+  }
+  .sb-menuAd,
+  .sb- {
+    max-width: 115px;
+    width: 115px;
+    min-width: 115px;
+    height: 115px;
+    min-height: 115px;
+    max-height: 115px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+  }
+}
+@media (max-width: 420px) {
+  .sb-menuAd,
+  .sb-addMenuItem {
+    border-radius: 5px;
+  }
+}

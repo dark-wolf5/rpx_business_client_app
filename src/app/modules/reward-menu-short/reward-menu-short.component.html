@@ -1,0 +1,59 @@
+<div *ngIf="(userAwarded$ | async) === null">
+  <h4
+    id="sp-loyaltyMenuTitle"
+    class="rpx-text-gradient text-center text-uppercase mb-3"
+  >
+    REWARD MENU
+  </h4>
+
+  <p class="rpx-loyaltyMenuDescription rpx-input-info text-center mb-3">
+    Available rewards for your customer.
+  </p>
+
+  <div class="sb-menuItemWrapper">
+    <ng-container *ngIf="(availableRewards$ | async)?.length === 0">
+      <p class="sb-text-light-green-gradient small">
+        No rewards available for your customer.
+      </p>
+    </ng-container>
+    <div
+      class="sb-menuItem"
+      *ngFor="let reward of availableRewards$ | async"
+      [ngStyle]="rewardTileStyling(reward)"
+      (click)="rewardUser(reward)"
+    >
+      <h6 *ngIf="reward.type === 0 || reward.type === 2">
+        <span class="rpx-text-gradient">
+          {{ reward.name }}
+        </span>
+      </h6>
+
+      <h6 *ngIf="reward.type === 1">
+        <span class="sb-text-light-green-gradient">
+          {{ reward.point_cost | currency: "USD" }}
+        </span>
+        <br />
+        <span class="rpx-text-gradient" style="font-size: 0.2rem">
+          DISCOUNT
+        </span>
+      </h6>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="(userAwarded$ | async) !== null">
+  <h4 class="rpx-text-gradient text-center text-uppercase mb-3">
+    USER REWARDED!
+  </h4>
+
+  <p class="rpx-loyaltyMenuDescription rpx-input-info text-center mb-3">
+    {{ (user$ | async)?.rpx_user.first_name }} was rewarded with
+    {{ (userAwarded$ | async)?.name }}.
+  </p>
+
+  <div class="btn rpx-button text-uppercase mt-4" (click)="seeMenu()">
+    SEE MENU
+  </div>
+</ng-container>
+
+<app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>

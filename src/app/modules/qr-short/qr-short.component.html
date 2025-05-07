@@ -1,0 +1,52 @@
+<div>
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h5 class="rpx-text-gradient text-center text-uppercase mb-3">
+      AWARD LOYALTY POINTS
+    </h5>
+
+    <form
+      [formGroup]="businessLoyaltyPointsForm"
+      *ngIf="businessLoyaltyPointsFormUp$ | async"
+    >
+      <div
+        *ngIf="
+          (businessLoyaltyPointsSubmitted$ | async) && f.totalSpent.errors;
+          else total_spent_normal
+        "
+        class="rpx-input-info rpx-error mb-2"
+      >
+        <div *ngIf="f.totalSpent.errors.required">You must enter a value!</div>
+      </div>
+
+      <ng-template #total_spent_normal>
+        <label class="rpx-input-info mb-2"> Enter the bill total. </label>
+      </ng-template>
+
+      <input
+        class="sb-input text-center"
+        formControlName="totalSpent"
+        type="text"
+        prefix="$"
+        placeholder="$250"
+        maxlength="7"
+        thousandSeparator=","
+        mask="separator.2"
+      />
+    </form>
+
+    <div class="btn rpx-button text-uppercase mt-4" (click)="addLp()">
+      AWARD
+    </div>
+  </div>
+</div>
+
+<div
+  class="animated slideOutUp"
+  style="position: absolute; margin: 0 auto; left: 0; right: 0; width: 100%"
+  *ngIf="redeemableItem$ | async as redeemable"
+>
+  <h4 class="rpx-text-gradient">Awarded</h4>
+  <span class="sb-text-light-green-gradient">{{
+    redeemable.redeemable.amount | number
+  }}</span>
+</div>

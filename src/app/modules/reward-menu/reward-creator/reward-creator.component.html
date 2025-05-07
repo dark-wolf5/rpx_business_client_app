@@ -1,0 +1,354 @@
+<app-loading-screen *ngIf="(loading$ | async) === true"></app-loading-screen>
+
+<div class="rpx-overlay-window">
+  <div class="sb-closeButton" (click)="closeRewardCreator()">
+    <i class="fa fa-times"></i>
+  </div>
+
+  <div #spbTopAnchor></div>
+
+  <div class="sb-rewardCreatorWrapper">
+    <div *ngIf="reward$ | async">
+      <h5 class="rpx-text-gradient text-center text-uppercase pt-3 mb-4">
+        USERS SCAN TO CLAIM
+      </h5>
+
+      <qrcode
+        [qrdata]="rewardClaimUrl$ | async"
+        cssClass="rpx-full-qrCode mt-4 mb-4"
+        colorDark="#000"
+        colorLight="#64e56f"
+        [width]="320"
+        errorCorrectionLevel="H"
+      ></qrcode>
+
+      <span><i class="fa fa-exclamation-triangle"></i></span>
+
+      <h5
+        class="rpx-text-gradient text-center text-uppercase pt-3 mb-4"
+        style="font-size: 0.8rem"
+      >
+        LOYALTY POINTS WILL BE DEDUCTED FROM SCANNER'S ACCOUNT
+      </h5>
+    </div>
+
+    <h5 class="rpx-text-gradient text-center text-uppercase pt-3 mb-4">
+      REWARD CREATOR
+    </h5>
+
+    <form
+      [formGroup]="rewardCreatorForm"
+      *ngIf="(rewardCreatorFormUp$ | async) === true"
+    >
+      <div
+        class="rpx-text-gradient text-uppercase text-center"
+        #spbInputInfo
+      ></div>
+
+      <div
+        *ngIf="
+          (rewardFormSubmitted$ | async) === true && f.rewardType.errors;
+          else rewardTypeTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.rewardType.errors.required">
+          You must pick a reward type!
+        </div>
+      </div>
+
+      <ng-template #rewardTypeTemplate>
+        <label class="rpx-input-info rpx-text-gradient mb-2">
+          Reward Type
+        </label>
+      </ng-template>
+
+      <ion-list class="sb-input mb-3">
+        <ion-item>
+          <ion-select
+            aria-label="Reward Type"
+            placeholder="Reward Type"
+            interface="action-sheet"
+            class="sb-select"
+            toggleIcon="caret-down-sharp"
+            (ionChange)="rewardTypeChange($event)"
+            [value]="rewardType"
+          >
+            <ion-select-option
+              *ngFor="let rewardTypeName of rewardTypeList; let i = index"
+              [value]="i"
+            >
+              {{ rewardTypeName }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <div
+        *ngIf="
+          (rewardFormSubmitted$ | async) === true && f.rewardValue.errors;
+          else rewardValueNormalTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mb-2"
+      >
+        <div *ngIf="f.rewardValue.errors.required">
+          Enter loyalty point cost.
+        </div>
+      </div>
+
+      <ng-template #rewardValueNormalTemplate>
+        <label class="rpx-input-info rpx-text-gradient mb-2">
+          Dollar Cost
+        </label>
+      </ng-template>
+
+      <input
+        class="sb-input"
+        (keyup)="calculatePointValue()"
+        formControlName="rewardValue"
+        type="text"
+        placeholder="$250"
+        maxlength="6"
+        thousandSeparator=","
+        prefix="$"
+        mask="separator.0"
+      />
+
+      <h6
+        class="mt-3 mb-3 sb-text-light-green-gradient text-uppercase"
+        style="font-size: 0.8rem !important"
+        *ngIf="
+          (dollarValueCalculated$ | async) === true &&
+          (businessPointsDollarValue$ | async)
+        "
+      >
+        {{ businessPointsDollarValue$ | async | number }} LOYALTY POINT VALUE
+      </h6>
+
+      <div
+        *ngIf="
+          (rewardFormSubmitted$ | async) === true && f.rewardName.errors;
+          else rewardNameNormalTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.rewardName.errors.required">Enter reward name.</div>
+
+        <div *ngIf="f.rewardName.errors.maxlength">
+          Maximum length - reward name - 50
+        </div>
+      </div>
+
+      <ng-template #rewardNameNormalTemplate>
+        <label class="rpx-input-info rpx-text-gradient mt-4 mb-2">
+          Reward Name
+        </label>
+      </ng-template>
+
+      <input
+        class="sb-input"
+        formControlName="rewardName"
+        type="text"
+        placeholder="My Reward"
+        maxlength="50"
+      />
+
+      <div
+        *ngIf="
+          (rewardFormSubmitted$ | async) === true && f.rewardDescription.errors;
+          else rewardDescriptionNormalTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.rewardDescription.errors.required">
+          Enter reward description.
+        </div>
+
+        <div *ngIf="f.rewardDescription.errors.minlength">
+          Min. length - description - 50
+        </div>
+
+        <div *ngIf="f.rewardDescription.errors.maxlength">
+          Max length - description - 250
+        </div>
+      </div>
+
+      <ng-template #rewardDescriptionNormalTemplate>
+        <label class="rpx-input-info rpx-text-gradient mt-4 mb-2">
+          Reward Description
+        </label>
+      </ng-template>
+
+      <textarea
+        class="rpx-textarea mb-2"
+        formControlName="rewardDescription"
+        maxlength="150"
+        placeholder="Reward Description"
+        style="margin: 0 auto"
+      ></textarea>
+
+      <span class="rpx-text-gradient"
+        >{{ rewardDescription.length }}/150</span
+      >
+
+      <input type="hidden" formControlName="rewardImage" />
+
+      <div class="mt-3 mb-3">
+        <label class="rpx-input-info rpx-text-gradient">
+          Reward Tier
+        </label>
+
+        <ion-list class="sb-input mb-3">
+          <ion-item>
+            <ion-select
+              aria-label="Reward Tier"
+              placeholder="Reward Tier"
+              interface="action-sheet"
+              class="sb-select"
+              toggleIcon="caret-down-sharp"
+              (ionChange)="rewardTierChange($event)"
+              [value]="tier"
+            >
+              <ion-select-option [value]="null">None</ion-select-option>
+              <ion-select-option
+                *ngFor="let tier of existingTiers$ | async; let i = index"
+                [value]="tier.id"
+              >
+                {{ tier.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+
+        <p
+          class="rpx-text-gradient rpx-input-info"
+          *ngIf="rewardTier$ | async"
+        >
+          Tier Entrance Dollar Value
+          <span class="sb-text-light-green-gradient"
+            >${{ dollarEntranceValue | number: "1.2" : "en-US" }}</span
+          ><br />
+        </p>
+
+        <ng-container *ngIf="(existingTiers$ | async)?.length === 0">
+          <p class="text-warning">You haven't created any Loyalty Tiers.</p>
+          <p class="rpx-text-gradient">
+            Close the menu and tap on "Manage Tiers" to create Loyalty Tiers.
+          </p>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="(rewardTier$ | async) === null">
+        <div class="mt-4">
+          <p class="small mb-2">
+            Can be redeemed with points from across all stores.
+          </p>
+          <ion-label style="padding-right: 2em">IS GLOBAL?</ion-label>
+          <mat-slide-toggle
+            formControlName="is_global"
+            [style.color]="'#fff'"
+          ></mat-slide-toggle>
+        </div>
+      </ng-container>
+    </form>
+
+    <form *ngIf="rewardType === 0 || rewardType === 2">
+      <div
+        *ngIf="
+          (rewardFormSubmitted$ | async) === true && f.rewardImage.errors;
+          else rewardMediaUploadInfoTemplate
+        "
+        class="rpx-input-info rpx-text-gradient text-center rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.rewardImage.errors.required">Reward Image</div>
+      </div>
+
+      <ng-template #rewardMediaUploadInfoTemplate>
+        <div
+          class="rpx-input-info rpx-text-gradient text-center mt-4 mb-2"
+          #rewardMediaUploadInfo
+        >
+          {{ rewardMediaMessage$ | async }}
+        </div>
+      </ng-template>
+
+      <ng-container *ngIf="($showDeniedMediaUploader | async) === false">
+        <div
+          class="rpx-upload-new-background-holder"
+          [ngStyle]="{
+            background: 'url(' + (rewardUploadImage$ | async) + ')',
+          }"
+          (click)="startRewardMediaUploader()"
+          #rpxRewardUploader
+        >
+          <div class="rpx-click-or-drag-upload">
+            <span class="rpx-text-gradient text-uppercase"
+              >tap to upload</span
+            >
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="($showDeniedMediaUploader | async) === true">
+        <div class="rpx-upload-new-background-holder">
+          <div class="rpx-click-or-drag-upload" (click)="openAppSettings()">
+            <p>PHOTO LIBRARY DISABLED</p>
+            <i class="fas fa-camera-alt"></i>
+            <p class="rpx-text-gradient text-uppercase">OPEN SETTINGS</p>
+          </div>
+        </div>
+      </ng-container>
+    </form>
+
+    <ion-grid class="mt-5">
+      <ion-row>
+        <ion-col>
+          <button class="btn rpx-button" (click)="saveReward()">
+            SAVE <i class="fa fa-check"></i>
+          </button>
+        </ion-col>
+        <ion-col>
+          <button class="btn rpx-button" (click)="closeRewardCreator()">
+            CANCEL
+          </button>
+        </ion-col>
+        <ion-col *ngIf="reward$ | async">
+          <button
+            class="btn rpx-button rpx-delete"
+            (click)="deleteMe()"
+          >
+            DELETE <i class="fa fa-trash"></i>
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</div>
+
+<div class="rpx-overlay-window" *ngIf="(rewardCreated$ | async) === true">
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h4 class="rpx-text-gradient rpx-r-success-title text-uppercase">
+      UPLOAD SUCCESSFUL
+    </h4>
+
+    <div class="sb-verificationCheck sb-text-light-green-gradient mt-4 mb-4">
+      <i class="fa fa-check"></i>
+    </div>
+
+    <h4 class="rpx-text-gradient rpx-r-success-title text-uppercase">
+      REWARD IS LIVE
+    </h4>
+  </div>
+</div>
+
+<div class="rpx-overlay-window" *ngIf="(rewardDeleted$ | async) === true">
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h4 class="rpx-text-gradient text-uppercase">REWARD WAS DELETED</h4>
+
+    <div class="sb-verificationCheck sb-text-light-green-gradient mt-4 mb-4">
+      <i class="fa fa-check"></i>
+    </div>
+
+    <h4 class="rpx-text-gradient text-uppercase">CONTINUE</h4>
+  </div>
+</div>

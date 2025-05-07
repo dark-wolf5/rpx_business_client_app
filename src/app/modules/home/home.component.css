@@ -1,0 +1,6 @@
+ion-content {
+  background: url("../../../assets/images/backgrounds-rpx-02.jpg");
+  background-position: center;
+  background-size: cover;
+  background-color: rgba(0, 0, 0, 0.9);
+}

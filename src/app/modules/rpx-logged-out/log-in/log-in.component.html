@@ -1,0 +1,104 @@
+<ion-content class="log-in-wrapper">
+  <ion-text
+    class="sb-signUpGeneralInstructions text-uppercase text-center mt-4"
+    id="sign_up_general_instructions"
+    #rpxSignUpIssues
+  >
+   Grow your business.
+  </ion-text>
+
+  <form [formGroup]="logInForm">
+    <ng-container
+      *ngIf="(submitted$ | async) && f.rpxUsername?.errors"
+      class="rpx-invalid-feedback text-uppercase rpx-text-gradient rpx-error"
+    >
+      <ion-label>
+        <ng-container
+                  *ngIf="
+            f.rpxUsername.errors?.required ||
+            f.rpxUsername.errors?.emptyUsername
+          "
+        >
+          USERNAME OR E-MAIL REQUIRED.
+        </ng-container>
+
+        <ng-container *ngIf="f.rpxUsername.errors?.wrongLength">
+          USERNAME MUST BE BETWEEN 5 AND 15 CHARACTERS.
+        </ng-container>
+
+        <ng-container *ngIf="f.rpxUsername.errors?.illegalChars">
+          USERNAME MUST ONLY CONTAIN LETTERS, NUMBERS, AND UNDERSCORES.
+        </ng-container>
+      </ion-label>
+    </ng-container>
+
+    <ng-container *ngIf="(submitted$ | async) && f.rpxUsername?.errors">
+      <ion-label class="rpx-invalid-feedback text-uppercase rpx-text-gradient rpx-error mb-2">
+        <ng-container *ngIf="f.rpxUsername.errors?.wrongAccountType">
+          Log-in using SB Business app.
+        </ng-container>
+
+        <ng-container *ngIf="f.rpxUsername.errors?.rpxAccount">
+          You signed up with an email address.
+        </ng-container>
+      </ion-label>
+    </ng-container>
+
+    <ion-grid class="sb-inputWithIconWrapper">
+      <ion-row>
+        <ion-col class="sb-iconInInputWrapper">
+          <i class="fa fa-envelope"></i>
+        </ion-col>
+
+        <ion-col>
+          <ion-input
+            class="sb-input"
+            id="rpxLoginUsername"
+            formControlName="rpxUsername"
+            type="text"
+            placeholder="USERNAME/EMAIL"
+            autocomplete="username"
+          />
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ng-container *ngIf="(submitted$ | async) && f.rpxPassword?.errors">
+      <ion-label class="rpx-invalid-feedback rpx-text-gradient rpx-error" *ngIf="f.rpxPassword.errors?.required">
+        PASSWORD IS REQUIRED.
+      </ion-label>
+    </ng-container>
+
+    <ion-grid class="sb-inputWithIconWrapper">
+      <ion-row>
+        <ion-col class="sb-iconInInputWrapper">
+          <i class="fa fa-lock"></i>
+        </ion-col>
+
+        <ion-col>
+          <ion-input
+            class="sb-input"
+            [type]="(passwordShow$ | async) === false ? 'password' : 'text'"
+            formControlName="rpxPassword"
+            autocomplete="password"
+            placeholder="PASSWORD"
+          />
+          <fa-icon
+            class="fa-eye"
+            [icon]="getEyeIcon()"
+            (click)="togglePassword()"
+          ></fa-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-button
+      class="rpx-rel-div rpx-forgot-your-pass rpx-text-link"
+      [routerLink]="'forgot-password'"
+    >
+      FORGOT YOUR PASSWORD?
+    </ion-button>
+  </form>
+
+  <ion-button class="btn rpx-button" (click)="initLogIn()">LOGIN</ion-button>
+</ion-content>

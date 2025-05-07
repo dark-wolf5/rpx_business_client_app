@@ -1,0 +1,177 @@
+<app-loading-screen *ngIf="loading"></app-loading-screen>
+
+<div class="rpx-overlay-window">
+  <div #spbTopAnchor></div>
+
+  <div class="sb-eventCreatorWrapper">
+    <h5 class="rpx-text-gradient text-center text-uppercase pt-3 mb-4">
+      EVENT CREATOR
+    </h5>
+
+    <form [formGroup]="eventCreatorForm" *ngIf="eventCreatorFormUp">
+      <div
+        class="rpx-text-gradient text-uppercase text-center"
+        #spbInputInfo
+      ></div>
+
+      <div
+        *ngIf="
+          eventFormSubmitted && f.eventName.errors;
+          else eventNameNormalTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.eventName.errors.required">Enter event name.</div>
+
+        <div *ngIf="f.eventName.errors.maxlength">
+          Maximum length - event name - 50
+        </div>
+      </div>
+
+      <ng-template #eventNameNormalTemplate>
+        <label class="rpx-input-info rpx-text-gradient mt-4 mb-2">
+          Event Name
+        </label>
+      </ng-template>
+
+      <input
+        class="sb-input"
+        (click)="$event.target.select()"
+        formControlName="eventName"
+        type="text"
+        placeholder="My Event"
+        maxlength="50"
+      />
+
+      <div
+        *ngIf="
+          eventFormSubmitted && f.eventDescription.errors;
+          else eventDescriptionNormalTemplate
+        "
+        class="rpx-input-info rpx-text-gradient rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.eventDescription.errors.required">
+          Enter event description.
+        </div>
+
+        <div *ngIf="f.eventDescription.errors.minlength">
+          Min. length - description - 50
+        </div>
+
+        <div *ngIf="f.eventDescription.errors.maxlength">
+          Max length - description - 250
+        </div>
+      </div>
+
+      <ng-template #eventDescriptionNormalTemplate>
+        <label class="rpx-input-info rpx-text-gradient mt-4 mb-2">
+          Briefly describe your event.
+        </label>
+      </ng-template>
+
+      <textarea
+        class="rpx-textarea rpx-text-gradient mb-2"
+        (click)="$event.target.select()"
+        formControlName="eventDescription"
+        maxlength="150"
+        placeholder="Event Description"
+        style="margin: 0 auto"
+      ></textarea>
+
+      <span class="rpx-text-gradient"
+        >{{ eventDescription.length }}/150</span
+      >
+
+      <input type="hidden" formControlName="eventImage" />
+    </form>
+
+    <form *ngIf="eventType == 0">
+      <div
+        *ngIf="
+          eventFormSubmitted && f.eventImage.errors;
+          else eventMediaUploadInfoTemplate
+        "
+        class="rpx-input-info rpx-text-gradient text-center rpx-error mt-4 mb-2"
+      >
+        <div *ngIf="f.eventImage.errors.required">Upload Event Image</div>
+      </div>
+
+      <ng-template #eventMediaUploadInfoTemplate>
+        <div
+          class="rpx-input-info rpx-text-gradient text-center mt-4 mb-2"
+          #eventMediaUploadInfo
+        >
+          {{ eventMediaMessage }}
+        </div>
+      </ng-template>
+
+      <input
+        type="file"
+        class="rpx-background-upload-input"
+        #eventMediaInput
+        (change)="uploadMedia(eventMediaInput.files)"
+        accept="image/jpeg, image/gif, image/png"
+        multiple="false"
+      />
+
+      <div
+        class="rpx-upload-new-background-holder"
+        [ngStyle]="{ background: 'url(' + eventUploadImage + ')' }"
+        (click)="startEventMediaUploader()"
+        #rpxeventUploader
+      >
+        <div class="rpx-click-or-drag-upload">
+          <span class="rpx-text-gradient text-uppercase"
+            >tap or drag to upload</span
+          >
+        </div>
+      </div>
+    </form>
+
+    <div class="rpx-button text-uppercase mt-5" (click)="saveEvent()">
+      <span class="rpx-text-gradient">SAVE</span>
+      <i class="fa fa-check"></i>
+    </div>
+
+    <div
+      class="mt-5 mb-5 sb-deleteMe"
+      *ngIf="event !== null && event !== undefined"
+      (click)="deleteMe()"
+    >
+      <span class="rpx-text-gradient">DELETE ME </span
+      ><i class="fa fa-trash"></i>
+    </div>
+
+    <div class="mt-5 mb-5 cursor-pointer" (click)="closeThis()">
+      <span class="rpx-text-gradient">CANCEL</span>
+    </div>
+  </div>
+</div>
+
+<div class="rpx-overlay-window" *ngIf="eventCreated">
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h4 class="rpx-text-gradient rpx-r-success-title text-uppercase">
+      YOUR EVENT UPLOAD WAS SUCCESSFUL
+    </h4>
+
+    <div class="sb-verificationCheck mt-4 mb-4">
+      <i class="fa fa-check sb-text-light-green-gradient"></i>
+    </div>
+
+    <h4 class="rpx-text-gradient rpx-r-success-title text-uppercase">
+      YOU ARE READY TO START
+    </h4>
+  </div>
+</div>
+
+<div class="rpx-overlay-window" *ngIf="eventDeleted">
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h4 class="rpx-text-gradient text-uppercase">YOUR event WAS DELETED</h4>
+
+    <div class="sb-verificationCheck mt-4 mb-4">
+      <i class="fa fa-check sb-text-light-green-gradient"></i>
+    </div>
+
+    <h4 class="rpx-text-gradient text-uppercase">CLICK TO CONTINUE</h4>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<ion-content>
+  <ion-grid>
+    <ion-row *ngIf="displayBusinessSetUp$ | async">
+      <ion-col>
+        <!-- Check if user has any pending steps to start using their business -->
+        <div
+          class="sb-dashboardWrapper sb-v-wrapper"
+          style="
+      display: grid;
+      align-content: center;
+      min-height: 70vh;
+      border-bottom: unset !important;
+    "
+        >
+          <i class="fas fa-users"></i>
+
+          <h2
+            class="sb-welcome2Rpx text-uppercase mt-4"
+            style="display: inline-block"
+          >
+            Welcome to Rpx
+          </h2>
+
+          <ion-text class="mb-4">
+            Looks like you need to finish setting up your account before starting to
+            use our service.
+          </ion-text>
+
+          <ion-button class="rpx-button" (click)="openSettings()">
+            FINISH SET-UP
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ng-container
+      *ngIf="
+      (displayBusinessSetUp$ | async) === false &&
+      (businessFetched$ | async) === true
+    "
+    >
+      <ion-row>
+        <ion-col>
+          <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
+            <app-user-set-up #appUserSetUp></app-user-set-up>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <div class="sb-dashboardWrapper" #qrCodeAppAnchor>
+            <app-qr #qrApp></app-qr>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <div class="sb-dashboardWrapper" #rewardMenuAppAnchor>
+            <app-reward-menu
+              [fullScreenMode]="false"
+              (notEnoughLpEvt)="openLoyaltyPoints()"
+              (rewardEdited)="rewardEdited()"
+              #rewardMenuApp
+            ></app-reward-menu>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <div class="sb-dashboardWrapper" #adManagerAppAnchor>
+            <app-ad-manager-menu
+              [fullScreenWindow]="false"
+              #adManagerApp
+            ></app-ad-manager-menu>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <div
+            class="sb-dashboardWrapper"
+            #customerAppAnchor
+            *ngIf="canUseCustomerManager$ | async"
+          >
+            <app-customer-manager></app-customer-manager>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+  </ion-grid>
+</ion-content>

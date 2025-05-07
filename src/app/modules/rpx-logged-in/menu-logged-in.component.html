@@ -1,0 +1,51 @@
+<ion-menu menuId="logged-in-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Rpx</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding" color="primary">
+    <ion-list>
+      <ion-item
+        class="ion-padding-top ion-padding-bottom"
+        color="primary"
+        lines="full"
+        [routerLink]="'/user-home'"
+      >
+        <ion-icon name="home" slot="start"></ion-icon>
+        HOME
+      </ion-item>
+
+      <ion-item
+        class="ion-padding-bottom"
+        color="primary"
+        lines="full"
+        [routerLink]="'/settings'"
+      >
+        <ion-icon name="cog" slot="start"></ion-icon>
+        SETTINGS
+      </ion-item>
+
+      <ion-item
+        class="ion-padding-bottom"
+        color="primary"
+        lines="full"
+        (click)="logOut()"
+      >
+        <ion-icon name="power" slot="start"></ion-icon>
+        LOG OUT
+      </ion-item>
+
+      <ion-item
+        class="ion-padding-bottom"
+        color="primary"
+        lines="full"
+        (click)="shareApp()"
+      >
+        <ion-icon name="code-download-outline" slot="start"></ion-icon>
+        SHARE APP
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>

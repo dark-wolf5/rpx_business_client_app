@@ -1,0 +1,750 @@
+<ion-loading [isOpen]="(loading$ | async) === true"></ion-loading>
+
+<ion-content class="pt-2 pb-5" #rpxSettingsWindow>
+  <ion-text #rpxSettingsInfoText class="mt-4 mb-4"></ion-text>
+
+  <ng-container *ngIf="settingsFormInitiated === true">
+    <form [formGroup]="settingsForm">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ng-container
+              *ngIf="
+              submitted && f.rpx_username.errors;
+              else usernameNormal
+            "
+            >
+              <ion-label>
+                <ng-container *ngIf="f.rpx_username.errors.required" >
+                  You must enter a username!
+                </ng-container>
+
+                <ng-container
+                  *ngIf="
+                f.rpx_username.errors.maxlength ||
+                f.rpx_username.errors.wrongLength
+              "
+                >
+                  Your username cannot be longer than 15 characters.
+                </ng-container>
+
+                <ng-container *ngIf="f.rpx_username.errors.illegalChars">
+                  Must only contain letters, numbers, dots, and underscores.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #usernameNormal>
+              <ion-label>
+                Change your username.
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              formControlName="rpx_username"
+              type="text"
+              value="username"
+              maxlength="35"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ng-container
+              *ngIf="
+              submitted && f.rpx_first_name.errors;
+              else userFirstNameNormal
+            "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="f.rpx_first_name.errors.required">
+                  Please enter your first name.
+                </ng-container>
+
+                <ng-container *ngIf="f.rpx_first_name.errors.maxlength">
+                  Your first name cannot be longer than 72 characters.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #userFirstNameNormal>
+              <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+                What is your first name?
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              class="sb-input"
+              formControlName="rpx_first_name"
+              type="text"
+              value="name"
+              maxlength="72"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ng-container
+              *ngIf="
+              submitted && f.rpx_last_name.errors;
+              else userLastNameNormal
+            "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="f.rpx_last_name.errors.required">
+                  Please enter your last name.
+                </ng-container>
+
+                <ng-container *ngIf="f.rpx_last_name.errors.maxlength">
+                  Your last name cannot be longer than 72 characters.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #userLastNameNormal>
+              <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+                What is your last name?
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              class="sb-input"
+              formControlName="rpx_last_name"
+              type="text"
+              value="name"
+              maxlength="72"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ng-container
+              *ngIf="
+              submitted && f.rpx_email.errors;
+              else userEmailMormal
+            "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="f.rpx_email.errors.required">
+                  Please enter your email.
+                </ng-container>
+
+                <ng-container *ngIf="f.rpx_email.errors.notUnique">
+                  This email is already taken.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #userEmailMormal>
+              <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+                What is your email?
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              class="sb-input"
+              formControlName="rpx_email"
+              type="text"
+              value="email"
+              maxlength="135"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+              Phone number.
+            </ion-label>
+
+            <ion-input
+              class="sb-input"
+              type="tel"
+              mask="(000) 000-0000"
+              autocomplete="tel"
+              placeholder="(555) 555-5555"
+              formControlName="rpx_phone_number"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="chosenAccountType != 4">
+          <ion-col>
+            <ng-container
+              *ngIf="
+              submitted && f.rpx_acc_type.errors;
+              else userAccountTypeNormal
+            "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="f.rpx_acc_type.errors.required">
+                  You must choose an account type!
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #userAccountTypeNormal>
+              <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+                Choose an account type.
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              (click)="changeAccType()"
+              class="sb-input"
+              formControlName="rpx_acc_type"
+              type="text"
+              readonly="readonly"
+            />
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-button class="btn rpx-button mb-5" (click)="saveSettings()">
+              Save Settings
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </ng-container>
+
+  <ng-container *ngIf="passwordForm">
+    <form [formGroup]="passwordForm">
+      <ion-grid class="rpx-settings-table" id="rpx-password-table">
+        <ion-row>
+          <ion-col>
+            <ion-label
+              class="rpx-input-info rpx-text-gradient rpx-error mb-2"
+              style="display: none"
+              #rpxPasswordInfoText
+            ></ion-label>
+
+            <ng-container
+              *ngIf="
+                passwordSubmitted && g.rpx_password.errors;
+                else rpxPasswordNormal
+              "
+
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="g.rpx_password.errors.required">
+                  Please provide a password.
+                </ng-container>
+
+                <ng-container *ngIf="g.rpx_password.errors.wrongLength">
+                  Password must be 1 to 15 characters long.
+                </ng-container>
+
+                <ng-container *ngIf="g.rpx_password.errors.oneNumber">
+                  Password must contain at least one number (0-9)!
+                </ng-container>
+
+                <ng-container *ngIf="g.rpx_password.errors.oneLowerCase">
+                  Password must contain at least one lowercase letter (a-z)!
+                </ng-container>
+
+                <ng-container *ngIf="g.rpx_password.errors.oneUpperCase">
+                  Password must contain at least one uppercase letter (A-Z)!
+                </ng-container>
+              </ion-label>
+            </ng-container>
+            <ng-template #rpxPasswordNormal>
+              <ion-label
+                class="rpx-input-info rpx-text-gradient mb-2"
+                #rpxPasswordChangeInfoText
+              >
+                Change your password.
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              class="sb-input"
+              formControlName="rpx_password"
+              type="password"
+              value="password"
+              autocomplete="false"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ng-container
+              *ngIf="
+                passwordSubmitted && g.rpx_confirm_password.errors;
+                else rpxConfirmPasswordNormal
+              "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error mb-2">
+                <ng-container *ngIf="g.rpx_confirm_password.errors.required">
+                  Please confirm your password.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #rpxConfirmPasswordNormal>
+              <ion-label class="rpx-input-info rpx-text-gradient mb-2">
+                Confirm your new password.
+              </ion-label>
+            </ng-template>
+
+            <ion-input
+              class="sb-input"
+              formControlName="rpx_confirm_password"
+              type="password"
+              value="newpassword"
+              autocomplete="false"
+            />
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button class="btn rpx-button" (click)="savePassword()">
+              CHANGE PASSWORD
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <!-- End Of Change Password Block -->
+      </ion-grid>
+
+      <ion-content class="rpx-overlay-window" *ngIf="savePasswordShow">
+        <div class="sb-closeButton" (click)="cancelPasswordSet()">
+          <i class="fa fa-times"></i>
+        </div>
+
+        <ion-grid class="rpx-settings-table">
+          <ion-row>
+            <ng-container
+              *ngIf="
+                passwordSubmitted && g.rpx_current_password.errors;
+                else rpxCurrentPasswordNormal
+              "
+            >
+              <ion-label class="rpx-input-info rpx-text-gradient rpx-error">
+                <ng-container *ngIf="g.rpx_current_password.errors.required">
+                  Please enter your current password.
+                </ng-container>
+              </ion-label>
+            </ng-container>
+
+            <ng-template #rpxCurrentPasswordNormal>
+              <ion-label
+                class="rpx-input-info rpx-text-gradient"
+                #currentPasswordInfo
+              >
+                To complete the change, enter your CURRENT password.
+              </ion-label>
+            </ng-template>
+          </ion-row>
+
+          <ion-grid>
+            <ion-col>
+              <ion-input
+                class="sb-input"
+                type="password"
+                formControlName="rpx_current_password"
+                value="123456789"
+                autocomplete="false"
+              />
+
+              <ion-button
+                class="rpx-button rpx-button-mini"
+                (click)="completeSavePassword()"
+              >
+                Complete Change
+              </ion-button>
+            </ion-col>
+          </ion-grid>
+        </ion-grid>
+      </ion-content>
+    </form>
+  </ng-container>
+
+  <div class="mt-5 mb-5 cursor-pointer" (click)="closeWindow()">
+    <span class="rpx-text-gradient">CLOSE</span>
+  </div>
+
+  <ion-content class="sb-vertical-align-wrapper" *ngIf="loadAccountTypes">
+    <ion-grid class="rpx-select-menu">
+      <ion-row>
+        <ion-col>
+          <ion-label
+            class="rpx-input-info rpx-text-gradient text-center mt-4 mb-4"
+          >
+            Choose an account type.
+          </ion-label>
+
+          <ion-button
+            class="rpx-select-menu-option mt-1 mb-1 pt-3 pb-3"
+            *ngFor="let account_type of accountTypeList"
+            (click)="selectAccountType(account_type)"
+          >
+            {{ account_type }}
+          </ion-button>
+
+          <ion-label
+            class="rpx-input-info rpx-text-gradient text-center mt-4 mb-4"
+            style="font-size: 0.8rem"
+          >
+            "Events" account type is coming soon.
+          </ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ng-container *ngIf="(user$ | async) as user">
+            <!-- User's membership is active -->
+            <ion-text
+              class="mt-4 mb-4 sb-text-light-green-gradient"
+              style="font-size: 0.8rem"
+              *ngIf="userIsSubscribed; else membershipExpired"
+            >
+              <ng-container *ngIf="!user.ends_at">
+                MEMBERSHIP IS ACTIVE
+              </ng-container>
+
+              <ng-container *ngIf="!user.ends_at">
+                NEXT PAYMENT {{ user.next_payment | date: "mediumDate" }}
+              </ng-container>
+
+              <ng-container *ngIf="user.ends_at">
+                YOU CANCELLED YOUR MEMBERSHIP
+              </ng-container>
+
+              <ng-container *ngIf="user.ends_at">
+                Last Day {{ user.ends_at | date }}
+              </ng-container>
+
+              <ion-button (click)="closeAccountType()">
+                CLOSE
+              </ion-button>
+            </ion-text>
+
+            <!-- Membership is Expired Case -->
+            <ng-template #membershipExpired>
+                <ng-container
+                  *ngIf="
+                !userIsSubscribed && chosenAccountType != 4 && user.business
+              "
+                >
+                  <div class="pb-4">
+                    <ion-icon name="pin"></ion-icon>
+                  </div>
+
+                  <h5>YOUR MEMBERSHIP IS EXPIRED</h5>
+
+                  <p style="font-size: 0.8rem">
+                    Please visit https://rpx.com to renew. <br />
+                    You can also call <br />
+                    <span>+1 (786) 600-5946</span
+                    ><br />
+                    for an in-person agent.
+                  </p>
+                </ng-container>
+            </ng-template>
+          </ng-container>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+</ion-content>
+
+<ion-content class="rpx-overlay-window" *ngIf="placeSettingsFormUp">
+  <form [formGroup]="businessSettingsForm">
+    <ion-grid class="rpx-settings-table" style="border-bottom: unset">
+      <ion-row>
+        <ion-col>
+          <ng-container
+            *ngIf="
+              placeFormSubmitted && i.rpxOrigin.errors;
+              else rpxOriginNormal
+            "
+          >
+            <ion-label class="rpx-input-info rpx-text-gradient text-center rpx-error">
+              <ng-container *ngIf="i.rpxOrigin.errors.required">
+                You must choose a place of origin!
+              </ng-container>
+            </ion-label>
+          </ng-container>
+
+          <ng-template #rpxOriginNormal>
+            <ion-label
+              class="rpx-input-info rpx-text-gradient text-center mt-5 mb-2"
+            >
+              Where is your {{ accountTypeCategoryFriendlyName }} located?
+            </ion-label>
+          </ng-template>
+
+          <div class="rpx-map">
+            <div
+              id="settings-map"
+              *ngIf="map$ | async"
+              [ngClass]="getMapClass()"
+            ></div>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="locationFound">
+        <ion-col>
+          <ion-text class="rpx-input-info rpx-text-gradient text-center mt-4">
+            Find your {{ accountTypeCategoryFriendlyName }}.
+          </ion-text>
+
+          <ion-input
+            class="sb-input rpx-search-map-input sb-origin-address-input"
+            (keydown)="searchMapsKeyDown($event)"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="off"
+            type="text"
+            formControlName="originAddress"
+            maxlength="72"
+            #addressSearch
+          />
+
+          <div class="rpx-button sb-search-icon" (click)="searchMaps()">
+            <i class="fa fa-search"></i>
+          </div>
+
+          <ion-input
+            class="sb-input"
+            type="hidden"
+            formControlName="rpxOrigin"
+          />
+
+          <div>
+            <div
+              class="rpx-place"
+              *ngFor="let prediction of addressResults"
+              (click)="focusPlace(prediction)"
+            >
+              <span class="rpx-text-gradient">{{
+                prediction.description
+              }}</span>
+            </div>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-text
+            class="rpx-input-info rpx-text-gradient text-uppercase text-center mt-2 mb-3"
+            *ngIf="locationFound"
+          >
+            {{ originTitle }}
+          </ion-text>
+
+          <ion-img
+            class="sb-business-img"
+            [ngClass]="getBusinessImgStyle()"
+            *ngIf="locationFound"
+            src="{{ originPhoto }}"
+          />
+
+          <ion-text
+            class="rpx-input-info rpx-text-gradient rpx-place-address text-uppercase text-center mt-4 mb-3"
+            *ngIf="locationFound && place !== undefined"
+          >
+            {{ place.formatted_address }}
+          </ion-text>
+        </ion-col>
+      </ion-row>
+      <!--
+            <h6 class="rpx-text-gradient text-uppercase mt-5 mb-4" #placeToEatMediaUploadInfo>
+                {{ placeToEatMediaMessage }}
+            </h6>
+
+            <input type="file"
+                class='rpx-background-upload-input'
+                #placeToEatMediaInput (change)="uploadMedia(placeToEatMediaInput.files)"
+                accept="image/jpeg, image/gif, image/png"
+                multiple=false >
+
+            <div class='rpx-upload-new-background-holder'
+                [ngStyle]="{ 'background' : 'url(' + originPhoto + ')' }"
+                (click)="startPlaceToEatMediaUploader()"
+                #placeToEatUploader>
+                <div class='rpx-click-or-drag-upload'>
+                    <span class="rpx-text-gradient text-uppercase">tap or drag to upload</span>
+                </div>
+            </div>-->
+      <ion-row *ngIf="locationFound">
+        <ion-col>
+          <ng-container
+            *ngIf="
+              placeFormSubmitted && i.originTitle.errors;
+              else originTitleNormal
+            "
+          >
+            <ng-container *ngIf="i.originTitle.errors.required">
+              Choose {{ accountTypeCategoryFriendlyName }} title.
+            </ng-container>
+
+            <ng-container *ngIf="i.originTitle.errors.maxlength">
+              Title must be less than 25 characters long.
+            </ng-container>
+          </ng-container>
+
+          <ng-template #originTitleNormal>
+            <ion-label
+              class="rpx-input-info rpx-text-gradient text-center mt-4 mb-2"
+              *ngIf="accountTypeCategory !== 'PERSONAL' && locationFound"
+            >
+              Choose {{ accountTypeCategoryFriendlyName }} title.
+            </ion-label>
+          </ng-template>
+
+          <ion-input
+            class="sb-input text-uppercase"
+            type="text"
+            placeholder="Place Title"
+            formControlName="originTitle"
+          />
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="locationFound">
+        <ion-col>
+          <ng-container
+            *ngIf="
+            placeFormSubmitted && i.originCategories.errors;
+            else originCategoriesNormal
+          "
+          >
+            <ion-label *ngIf="i.originCategories.errors.required">
+              Enter {{ accountTypeCategoryFriendlyName }} categories.
+            </ion-label>
+          </ng-container>
+
+          <ng-template #originCategoriesNormal>
+            <ion-label
+              class="rpx-input-info rpx-text-gradient text-center mt-4 mb-2"
+            >
+              Select {{ accountTypeCategoryFriendlyName }} category.
+            </ion-label>
+          </ng-template>
+
+          <ion-list class="sb-input mb-3">
+            <ion-item>
+              <ion-select
+                aria-label="Add Category..."
+                placeholder="Add Category..."
+                interface="action-sheet"
+                class="sb-select"
+                #businessInput
+                formControlName="originCategories"
+                toggleIcon="caret-down-sharp"
+                (ionChange)="add($event)"
+                [value]="selected"
+              >
+                <ion-select-option
+                  *ngFor="let category of businessCategoryList; let i = index"
+                  [value]="i"
+                >
+                  {{ category }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="locationFound">
+        <ion-col style="padding-top: 0; padding-bottom: 0">
+          <ng-container
+            *ngIf="
+              placeFormSubmitted && i.originDescription.errors;
+              else rpxOriginDescriptionNormal
+            "
+          >
+            <ion-label class="rpx-input-info mb-3 rpx-text-gradient text-center rpx-error">
+              <ng-container *ngIf="i.originDescription.errors.required">
+                You must enter a description!
+              </ng-container>
+
+              <ng-container *ngIf="i.originDescription.errors.maxlength">
+                Your description can only be 350 characters long.
+              </ng-container>
+
+              <ng-container *ngIf="i.originDescription.errors.minlength">
+                Your description must be at least 100 characters.
+              </ng-container>
+            </ion-label>
+          </ng-container>
+
+          <ng-template #rpxOriginDescriptionNormal>
+            <ion-label
+              class="rpx-input-info rpx-text-gradient text-center mb-2"
+              *ngIf="accountTypeCategory !== 'PERSONAL' && locationFound"
+            >
+              Enter {{ accountTypeCategoryFriendlyName }} description.
+            </ion-label>
+          </ng-template>
+
+          <ion-textarea
+            class="rpx-textarea"
+            formControlName="originDescription"
+            maxlength="350"
+            style="margin: 0 auto"
+          ></ion-textarea>
+
+          <div class="rpx-text-gradient mt-2 mb-2">
+            {{ originDescription.length }} / 350
+          </div>
+        </ion-col>
+      </ion-row>
+      <ng-container *ngIf="accountTypeCategory === 'PLACE TO EAT'">
+        <ion-row>
+          <ion-col style="color: white">
+            <fa-icon class="food-truck" [icon]="faFoodTruckIcon"></fa-icon>
+            <mat-slide-toggle
+              ngModel
+              name="isFoodTruck"
+              [style.color]="'#fff'"
+            ></mat-slide-toggle>
+            Food Truck?
+          </ion-col>
+        </ion-row>
+      </ng-container>
+      <ion-row>
+        <ion-col>
+          <ion-button
+            class="btn rpx-button text-uppercase"
+            (click)="startBusinessVerification()"
+            *ngIf="locationFound"
+          >
+            Verify
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-button
+          class="rpx-text-gradient text-center text-uppercase mt-4 mb-5"
+          *ngIf="(loading$ | async) === false"
+          style="cursor: pointer"
+          (click)="cancelPlaceSettings()"
+        >
+          CANCEL
+        </ion-button>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+
+<ion-content
+  class="rpx-overlay-window"
+  style="z-index: 99"
+  *ngIf="businessVerified"
+  (click)="closeWindow()"
+>
+  <div class="sb-v-wrapper" style="display: grid; align-content: center">
+    <h4 class="rpx-text-gradient text-uppercase">
+      YOUR VERIFICATION WAS SUCCESSFUL
+    </h4>
+
+    <div class="sb-verificationCheck mt-4 mb-4">
+      <i class="fa fa-check sb-text-light-green-gradient"></i>
+    </div>
+
+    <h4 class="rpx-text-gradient text-uppercase">YOU ARE READY TO START</h4>
+  </div>
+</ion-content>
